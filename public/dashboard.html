@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SafeRoute</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/map.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/"><span class="logo">🛡️</span><span class="brand-name">SafeRoute</span></a>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/">Home</a></li>
+                <li><a href="/dashboard.html" class="active">Live Map</a></li>
+                <li><a href="/shelters.html">Shelters</a></li>
+                <li><a href="/route.html">Safe Route</a></li>
+                <li><a href="/report.html">Report</a></li>
+                <li id="profileNavItem" style="display:none"><a href="/profile.html">Profile</a></li>
+                <li id="adminNavItem" style="display:none"><a href="/admin.html">Admin</a></li>
+                <li id="loginNavItem"><a href="/login.html" class="btn-nav">Login</a></li>
+                <li id="logoutNavItem" style="display:none"><a href="#" onclick="logout()" class="btn-nav btn-logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="dashboard-layout">
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-val" id="activeCount">--</span>
+                <span class="stat-lbl">Active Incidents</span>
+            </div>
+            <div class="stat-item critical">
+                <span class="stat-val" id="criticalCount">--</span>
+                <span class="stat-lbl">Critical</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-val" id="shelterCount">--</span>
+                <span class="stat-lbl">Open Shelters</span>
+            </div>
+            <div class="stat-item">
+                <a href="/report.html" class="btn btn-danger btn-sm">🚨 Report Incident</a>
+            </div>
+        </div>
+
+        <div class="dashboard-body">
+            <!-- Filter Panel -->
+            <div class="filter-panel">
+                <h3>🔍 Filter</h3>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-type="all" onclick="filterIncidents('all', this)">All</button>
+                    <button class="filter-btn" data-type="road_blocked" onclick="filterIncidents('road_blocked', this)">🚧 Road</button>
+                    <button class="filter-btn" data-type="waterlogging" onclick="filterIncidents('waterlogging', this)">🌊 Water</button>
+                    <button class="filter-btn" data-type="accident" onclick="filterIncidents('accident', this)">💥 Accident</button>
+                    <button class="filter-btn" data-type="fire" onclick="filterIncidents('fire', this)">🔥 Fire</button>
+                    <button class="filter-btn" data-type="unsafe_area" onclick="filterIncidents('unsafe_area', this)">⚠️ Unsafe</button>
+                    <button class="filter-btn" data-type="traffic_jam" onclick="filterIncidents('traffic_jam', this)">🚗 Traffic</button>
+                    <button class="filter-btn" data-type="shelter" onclick="filterShelters(this)">🏠 Shelters</button>
+                </div>
+
+                <h3>📋 Incidents</h3>
+                <div id="incidentFeed" class="incident-feed">
+                    <div class="loading-spinner">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Map -->
+            <div class="map-container">
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

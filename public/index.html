@@ -1,0 +1,617 @@
+<!--mongodb://127.0.0.1:27017-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeRoute - Emergency Monitoring System</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/theme.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+
+            <div class="nav-brand">
+                <span class="logo">🛡️</span>
+                <span class="brand-name">SafeRoute</span>
+            </div>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/">Home</a></li>
+                <li><a href="/dashboard.html">Live Map</a></li>
+                <li><a href="/shelters.html">Shelters</a></li>
+                <li><a href="/route.html">Safe Route</a></li>
+                <li><a href="/report.html" id="reportLink">Report</a></li>
+
+                <li id="profileNavItem" style="display:none">
+                    <a href="/profile.html">Profile</a>
+                </li>
+
+                <li id="adminNavItem" style="display:none">
+                    <a href="/admin.html">Admin</a>
+                </li>
+
+                <li id="loginNavItem">
+                    <a href="/login.html" class="btn-nav">Login</a>
+                </li>
+
+                <li id="logoutNavItem" style="display:none">
+                    <a href="#" onclick="logout()" class="btn-nav btn-logout">
+                        Logout
+                    </a>
+                </li>
+            </ul>
+
+            <div class="hamburger" onclick="toggleNav()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+        </div>
+    </nav>
+
+
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="hero-badge">
+                🚨 Community Emergency System
+            </div>
+
+            <h1>SafeRoute</h1>
+
+            <p class="hero-subtitle">
+                Community-powered emergency information and safer route recommendations
+            </p>
+
+            <p class="hero-desc">
+                Report road blocks, floods, accidents, fires, and other emergencies.
+                Help your community navigate safely using real-time crowd-sourced data.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="/report.html" class="btn btn-danger">
+                    🚨 Report Incident
+                </a>
+
+                <a href="/dashboard.html" class="btn btn-primary">
+                    🗺️ View Live Map
+                </a>
+
+                <a href="/route.html" class="btn btn-success">
+                    📍 Find Safe Route
+                </a>
+
+                <a href="/shelters.html" class="btn btn-warning">
+                    🏠 Find Shelters
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= STATS ================= -->
+        <div class="hero-stats">
+
+            <div class="stat-card">
+                <div class="stat-number" id="totalIncidents">
+                    --
+                </div>
+
+                <div class="stat-label">
+                    Active Incidents
+                </div>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-number" id="totalShelters">
+                    --
+                </div>
+
+                <div class="stat-label">
+                    Open Shelters
+                </div>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-number" id="highSeverity">
+                    --
+                </div>
+
+                <div class="stat-label">
+                    High Severity
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FEATURES ================= -->
+    <section class="features">
+
+        <div class="container">
+
+            <h2 class="section-title">
+                How SafeRoute Works
+            </h2>
+
+            <div class="features-grid">
+
+                <div class="feature-card">
+                    <div class="feature-icon">📣</div>
+
+                    <h3>
+                        Report Incidents
+                    </h3>
+
+                    <p>
+                        Report road blocks, floods, accidents, fires,
+                        and other emergencies with location and severity details.
+                    </p>
+                </div>
+
+
+                <div class="feature-card">
+                    <div class="feature-icon">🗺️</div>
+
+                    <h3>
+                        Live Map
+                    </h3>
+
+                    <p>
+                        View all incidents on an interactive map with
+                        color-coded markers for different emergency types.
+                    </p>
+                </div>
+
+
+                <div class="feature-card">
+                    <div class="feature-icon">🛣️</div>
+
+                    <h3>
+                        Safe Routes
+                    </h3>
+
+                    <p>
+                        Get route suggestions that avoid high-risk areas
+                        based on community-reported incidents.
+                    </p>
+                </div>
+
+
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+
+                    <h3>
+                        Community Verification
+                    </h3>
+
+                    <p>
+                        Verify incidents reported by others and build
+                        your reputation as a trusted reporter.
+                    </p>
+                </div>
+
+
+                <div class="feature-card">
+                    <div class="feature-icon">🏠</div>
+
+                    <h3>
+                        Find Shelters
+                    </h3>
+
+                    <p>
+                        Locate nearby emergency shelters with capacity,
+                        facilities, and contact information.
+                    </p>
+                </div>
+
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+
+                    <h3>
+                        Real-time Analytics
+                    </h3>
+
+                    <p>
+                        Dashboard with charts showing incident patterns,
+                        severity distribution, and trends.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= INCIDENT TYPES ================= -->
+    <section class="incident-types">
+
+        <div class="container">
+
+            <h2 class="section-title">
+                Reportable Incident Types
+            </h2>
+
+            <div class="types-grid">
+
+                <div class="type-badge type-road">
+                    🚧 Road Blocked
+                </div>
+
+                <div class="type-badge type-water">
+                    🌊 Waterlogging
+                </div>
+
+                <div class="type-badge type-accident">
+                    💥 Accident
+                </div>
+
+                <div class="type-badge type-fire">
+                    🔥 Fire
+                </div>
+
+                <div class="type-badge type-unsafe">
+                    ⚠️ Unsafe Area
+                </div>
+
+                <div class="type-badge type-traffic">
+                    🚗 Traffic Jam
+                </div>
+
+                <div class="type-badge type-ambulance">
+                    🚑 Ambulance Access
+                </div>
+
+                <div class="type-badge type-shelter">
+                    🏠 Shelter Open
+                </div>
+
+                <div class="type-badge type-shelter">
+                    🏚️ Shelter Closed
+                </div>
+
+                <div class="type-badge type-other">
+                    ❗ Other Emergency
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= RECENT INCIDENTS ================= -->
+    <section class="recent-incidents">
+
+        <div class="container">
+
+            <h2 class="section-title">
+                Recent Incidents
+            </h2>
+
+            <div id="recentIncidentsList" class="incidents-grid">
+
+                <div class="loading-spinner">
+                    Loading incidents...
+                </div>
+
+            </div>
+
+            <div style="text-align:center; margin-top: 1.5rem">
+
+                <a href="/dashboard.html" class="btn btn-primary">
+                    View All Incidents on Map →
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= DISCLAIMER ================= -->
+    <section class="disclaimer-section">
+
+        <div class="container">
+
+            <div class="disclaimer-box">
+
+                <h3>
+                    ⚠️ Important Disclaimer
+                </h3>
+
+                <p>
+                    SafeRoute provides crowd-sourced emergency information.
+                    This information may not be complete or accurate.
+                    <strong>
+                        Always follow official government and emergency service instructions.
+                    </strong>
+
+                    In life-threatening situations, call emergency services immediately:
+                </p>
+
+                <div class="emergency-numbers">
+
+                    <span>🚔 Police: 100</span>
+                    <span>🚑 Ambulance: 108</span>
+                    <span>🚒 Fire: 101</span>
+                    <span>🆘 Disaster: 1078</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+
+        <div class="container">
+
+            <div class="footer-content">
+
+                <div class="footer-brand">
+                    <span class="logo">🛡️</span>
+                    <span>SafeRoute</span>
+                </div>
+
+                <p>
+                    Community-powered emergency information system.
+                    Built with MongoDB, Node.js, Express, Leaflet.js, and OSRM.
+                </p>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <a href="/dashboard.html">
+                    Live Map
+                </a>
+
+                <a href="/route.html">
+                    Safe Route
+                </a>
+
+                <a href="/shelters.html">
+                    Shelters
+                </a>
+
+                <a href="/report.html">
+                    Report Incident
+                </a>
+
+            </div>
+
+
+            <p class="footer-note">
+                ⚠️ In emergencies, always call 100 (Police),
+                108 (Ambulance), or 101 (Fire).
+                SafeRoute does not replace official emergency services.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script src="/js/common.js"></script>
+    <script src="/js/auth.js"></script>
+
+    <script>
+
+        // ==========================================
+        // LOAD HOMEPAGE STATISTICS
+        // ==========================================
+
+        async function loadStats() {
+
+            try {
+
+                // Get overall statistics from backend
+                const statsRes =
+                    await fetch('/api/stats/summary');
+
+                const s =
+                    await statsRes.json();
+
+
+                // ==========================================
+                // UPDATE THE THREE STAT NUMBERS
+                // ==========================================
+
+                document.getElementById('totalIncidents').textContent =
+                    s.activeIncidents || 0;
+
+                document.getElementById('totalShelters').textContent =
+                    s.openShelters || 0;
+
+                document.getElementById('highSeverity').textContent =
+                    s.highSeverity || 0;
+
+
+                // ==========================================
+                // LOAD RECENT INCIDENTS
+                // ==========================================
+
+                const incidentsRes =
+                    await fetch('/api/incidents?status=active&limit=6');
+
+                const incidentsData =
+                    await incidentsRes.json();
+
+
+                const list =
+                    document.getElementById('recentIncidentsList');
+
+
+                // ==========================================
+                // SHOW RECENT INCIDENT CARDS
+                // ==========================================
+
+                if (
+                    incidentsData.success &&
+                    incidentsData.incidents &&
+                    incidentsData.incidents.length > 0
+                ) {
+
+                    list.innerHTML =
+                        incidentsData.incidents.map(inc => `
+
+                            <div class="incident-card">
+
+                                <div class="incident-card-header">
+
+                                    <span class="type-icon">
+                                        ${getTypeIcon(inc.type)}
+                                    </span>
+
+                                    <span class="severity-badge severity-${inc.severity}">
+                                        ${inc.severity.toUpperCase()}
+                                    </span>
+
+                                </div>
+
+
+                                <h4>
+                                    ${inc.title}
+                                </h4>
+
+
+                                <p>
+                                    ${inc.description.substring(0, 100)}
+                                    ${inc.description.length > 100 ? '...' : ''}
+                                </p>
+
+
+                                <div class="incident-card-footer">
+
+                                    <span>
+                                        ✅ ${inc.verificationCount} confirmations
+                                    </span>
+
+                                    <span>
+                                        ${timeAgo(inc.createdAt)}
+                                    </span>
+
+                                </div>
+
+
+                                <a
+                                    href="/dashboard.html"
+                                    class="btn btn-sm btn-outline"
+                                >
+                                    View on Map
+                                </a>
+
+                            </div>
+
+                        `).join('');
+
+                } else {
+
+                    list.innerHTML =
+                        '<p class="no-data">No active incidents reported. Stay safe!</p>';
+
+                }
+
+            } catch (err) {
+
+                console.error(
+                    'Failed to load stats:',
+                    err
+                );
+
+            }
+
+        }
+
+
+        // ==========================================
+        // INCIDENT ICONS
+        // ==========================================
+
+        function getTypeIcon(type) {
+
+            const icons = {
+
+                road_blocked: '🚧',
+                waterlogging: '🌊',
+                accident: '💥',
+                fire: '🔥',
+                unsafe_area: '⚠️',
+                traffic_jam: '🚗',
+                ambulance_access: '🚑',
+                shelter_open: '🏠',
+                shelter_closed: '🏚️',
+                other: '❗'
+
+            };
+
+            return icons[type] || '❗';
+
+        }
+
+
+        // ==========================================
+        // TIME AGO
+        // ==========================================
+
+        function timeAgo(dateStr) {
+
+            const diff =
+                Date.now() -
+                new Date(dateStr).getTime();
+
+            const hours =
+                Math.floor(diff / 3600000);
+
+
+            if (hours < 1)
+                return 'Just now';
+
+
+            if (hours < 24)
+                return `${hours}h ago`;
+
+
+            return `${Math.floor(hours / 24)}d ago`;
+
+        }
+
+
+        // ==========================================
+        // START LOADING
+        // ==========================================
+
+        loadStats();
+
+    </script>
+
+</body>
+</html>

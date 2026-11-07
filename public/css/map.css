@@ -1,0 +1,164 @@
+/* ============================================
+   SafeRoute - Map Styles
+   ============================================ */
+
+.map-container {
+    flex: 1;
+    position: relative;
+    min-height: 400px;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    z-index: 1;
+}
+
+/* --- Full-page map (route/shelter pages) --- */
+.map-full {
+    height: calc(100vh - 56px - 200px);
+    min-height: 400px;
+}
+
+/* --- Map Legend --- */
+.map-legend {
+    background: var(--white);
+    padding: .75rem 1rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    font-size: .78rem;
+    line-height: 1.8;
+}
+
+.map-legend h4 { font-size: .85rem; margin-bottom: .35rem; }
+.legend-item { display: flex; align-items: center; gap: .35rem; }
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* --- Custom Leaflet Popups --- */
+.leaflet-popup-content-wrapper {
+    border-radius: 10px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,.15) !important;
+    padding: 0 !important;
+}
+
+.leaflet-popup-content {
+    margin: 0 !important;
+    min-width: 220px;
+    max-width: 280px;
+}
+
+.popup-content {
+    padding: .85rem 1rem;
+}
+
+.popup-content h4 {
+    font-size: .95rem;
+    margin-bottom: .35rem;
+    color: var(--dark);
+}
+
+.popup-content p {
+    font-size: .82rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+}
+
+.popup-content .popup-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    font-size: .75rem;
+    color: var(--gray-light);
+    margin-top: .5rem;
+}
+
+.popup-type {
+    display: inline-block;
+    padding: .15rem .5rem;
+    border-radius: 12px;
+    font-size: .72rem;
+    font-weight: 600;
+    background: var(--light);
+    margin-bottom: .35rem;
+}
+
+/* --- Route Lines --- */
+.route-info-box {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 1rem;
+    box-shadow: var(--shadow);
+    margin-bottom: .75rem;
+    border-left: 4px solid var(--primary);
+    cursor: pointer;
+    transition: box-shadow .2s;
+}
+
+.route-info-box:hover { box-shadow: var(--shadow-md); }
+
+.route-info-box.recommended { border-left-color: var(--success); background: #f0fdf4; }
+.route-info-box.high-risk { border-left-color: var(--danger); }
+
+.route-info-box h4 { font-size: .95rem; margin-bottom: .35rem; }
+.route-details { display: flex; gap: 1rem; font-size: .82rem; color: var(--gray); }
+
+.risk-label {
+    display: inline-block;
+    padding: .2rem .6rem;
+    border-radius: 12px;
+    font-size: .75rem;
+    font-weight: 700;
+}
+
+.risk-safe { background: #dcfce7; color: #166534; }
+.risk-low { background: #fef3c7; color: #92400e; }
+.risk-moderate { background: #fed7aa; color: #c2410c; }
+.risk-high { background: #fecaca; color: #991b1b; }
+.risk-critical { background: #991b1b; color: #fff; }
+
+/* --- Shelter Popup --- */
+.shelter-popup h4 { color: var(--success); }
+
+.shelter-popup .capacity-bar {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+    margin: .35rem 0;
+}
+
+.shelter-popup .capacity-fill {
+    height: 100%;
+    background: var(--success);
+    border-radius: 3px;
+    transition: width .3s;
+}
+
+/* --- Marker Colors --- */
+.marker-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,.3);
+}
+
+.marker-icon span { transform: rotate(45deg); }
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .map-full { height: 350px; }
+}

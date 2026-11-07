@@ -1,0 +1,378 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+/* ============================================
+   SafeRoute - Dark theme
+   Paste over theme.css (or link after style.css, dashboard.css, map.css).
+   Near-black surfaces, hairline borders, one mint accent ("safe"),
+   red for danger, amber for caution, a dark map.
+   ============================================ */
+
+:root {
+    color-scheme: dark;
+
+    /* Change fonts here only (and the @import line above) */
+    --font-head: 'Space Grotesk', 'Instrument Sans', system-ui, sans-serif;
+    --font-body: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+    --bg: #07090D;
+    --surface: #0E1218;
+    --surface-2: #141A23;
+    --line: rgba(255,255,255,.09);
+    --line-strong: rgba(255,255,255,.16);
+
+    --primary: #34E0A1;
+    --primary-dark: #1FBF86;
+    --danger: #FF5A5F;
+    --danger-dark: #E8444A;
+    --success: #34E0A1;
+    --success-dark: #1FBF86;
+    --warning: #FFB020;
+    --warning-dark: #E69A0B;
+    --dark: #E8EDF5;
+    --dark-light: #C3CCDA;
+    --gray: #9AA6B8;
+    --gray-light: #7C8AA0;
+    --light: rgba(255,255,255,.04);
+    --white: #FFFFFF;
+    --border: rgba(255,255,255,.09);
+    --radius: 14px;
+    --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 10px 30px rgba(0,0,0,.35);
+    --shadow-md: 0 14px 40px rgba(0,0,0,.5);
+    --shadow-lg: 0 20px 60px rgba(0,0,0,.6);
+}
+
+html { background: var(--bg); }
+
+body {
+    background: var(--bg);
+    color: var(--dark);
+    font-family: var(--font-body);
+    line-height: 1.55;
+}
+
+h1, h2, h3, h4, .brand-name, .btn, .nav-links li a, .filter-btn, .stat-number,
+.stat-val, .risk-label, .severity-badge, .type-badge {
+    font-family: var(--font-head);
+}
+
+a { color: var(--primary); }
+::selection { background: rgba(52,224,161,.3); }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+* { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.2) transparent; }
+
+/* --- Surfaces --- */
+.card, .profile-card, .auth-card, .feature-card, .incident-card, .stats-bar,
+.filter-panel, .map-legend, .route-info-box, .stat-card, .demo-cred {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    color: var(--dark);
+}
+
+/* --- Navbar --- */
+.navbar {
+    background: rgba(7,9,13,.78);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid var(--line);
+    box-shadow: none;
+    padding: 0;
+}
+
+.nav-container { min-height: 56px; }
+.nav-brand a { color: #fff; }
+.brand-name { font-size: 1.2rem; font-weight: 700; letter-spacing: -.01em; }
+
+.nav-links li a {
+    color: var(--gray);
+    font-weight: 500;
+    border-radius: 8px;
+    transition: background-color .15s, color .15s;
+}
+.nav-links li a:hover { color: #fff; background: rgba(255,255,255,.07); }
+.nav-links li a.active { color: #fff; background: rgba(255,255,255,.1); }
+
+.btn-nav { background: var(--primary) !important; color: #04120D !important; border-radius: 8px !important; }
+.btn-nav:hover { background: var(--primary-dark) !important; }
+.btn-logout { background: rgba(255,90,95,.14) !important; color: #FF8A8E !important; border: 1px solid rgba(255,90,95,.35); }
+.btn-logout:hover { background: var(--danger) !important; color: #fff !important; }
+.hamburger span { background: #fff; }
+
+/* --- Buttons --- */
+.btn { border-radius: 10px; font-weight: 600; transition: background-color .15s, box-shadow .15s, transform .15s, border-color .15s; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,.45); }
+
+.btn-primary, .btn-success { background: var(--primary); color: #04120D; }
+.btn-primary:hover, .btn-success:hover { background: var(--primary-dark); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-warning { background: var(--warning); color: #241700; }
+.btn-outline { background: transparent; color: var(--dark); border: 1px solid var(--line-strong); }
+.btn-outline:hover { background: rgba(255,255,255,.08); color: #fff; border-color: rgba(255,255,255,.3); }
+
+/* --- Hero: glow and a faint grid --- */
+.hero {
+    color: var(--dark);
+    padding: 5rem 1rem 3.5rem;
+    background:
+        radial-gradient(60% 90% at 50% 0%, rgba(52,224,161,.18), transparent 70%),
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 56px 56px,
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 56px 56px,
+        var(--bg);
+    border-bottom: 1px solid var(--line);
+}
+
+.hero-badge {
+    background: rgba(52,224,161,.1);
+    color: var(--primary);
+    border: 1px solid rgba(52,224,161,.35);
+    backdrop-filter: none;
+    font-weight: 600;
+}
+
+.hero h1 {
+    font-weight: 700;
+    font-size: clamp(2.75rem, 6.5vw, 4.5rem);
+    letter-spacing: -.03em;
+    line-height: 1.05;
+    background: linear-gradient(180deg, #FFFFFF 30%, #8FA0BA 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+.hero-subtitle { opacity: 1; color: var(--dark); font-weight: 500; }
+.hero-desc { opacity: 1; color: var(--gray); }
+
+.hero .btn-success { background: var(--primary); color: #04120D; }
+.hero .btn-warning { background: transparent; color: var(--dark); border: 1px solid var(--line-strong); }
+.hero .btn-warning:hover { background: rgba(255,255,255,.08); }
+
+.stat-card { backdrop-filter: none; border-radius: 16px; }
+.stat-number { color: #fff; font-weight: 700; }
+.stat-label { color: var(--gray); opacity: 1; }
+
+/* --- Home sections --- */
+.features { background: transparent; }
+.incident-types { background: rgba(255,255,255,.02); border-block: 1px solid var(--line); }
+.recent-incidents, .disclaimer-section { background: transparent; }
+
+.section-title { color: #fff; font-weight: 700; letter-spacing: -.02em; }
+
+.feature-card, .incident-card { border-radius: 16px; }
+.feature-card:hover { transform: translateY(-3px); border-color: rgba(52,224,161,.4); box-shadow: var(--shadow-md); }
+.feature-card h3, .incident-card h4 { color: #fff; }
+.feature-card p, .incident-card p { color: var(--gray); }
+.incident-card { border-left: 3px solid var(--primary); }
+
+.type-badge { background: var(--surface); border-width: 1px; font-weight: 600; }
+
+/* --- Severity --- */
+.severity-badge { display: inline-flex; align-items: center; gap: .4em; border-radius: 999px; font-weight: 600; padding: .2rem .7rem; }
+.severity-badge::before { content: ""; width: .5em; height: .5em; border-radius: 50%; background: currentColor; }
+.severity-badge.severity-critical { background: rgba(255,90,95,.16);  color: #FF8A8E; }
+.severity-badge.severity-high     { background: rgba(255,138,61,.16); color: #FFA45C; }
+.severity-badge.severity-medium   { background: rgba(255,209,102,.15); color: #FFD166; }
+.severity-badge.severity-low      { background: rgba(52,224,161,.14);  color: #5EE6B0; }
+
+/* --- Disclaimer, footer, alerts --- */
+.disclaimer-box { background: rgba(255,176,32,.07); border: 1px solid rgba(255,176,32,.35); border-radius: 16px; box-shadow: none; }
+.disclaimer-box h3 { color: #FFC857; }
+.disclaimer-box p, .emergency-numbers { color: #E8CFA0; }
+
+.footer { background: #05070A; color: var(--gray); border-top: 1px solid var(--line); }
+.footer-brand { color: #fff; }
+.footer-links a { color: var(--gray); }
+.footer-links a:hover { color: var(--primary); }
+.footer-note { color: var(--gray-light); }
+
+.alert { border-radius: 10px; }
+.alert-success { background: rgba(52,224,161,.1); color: #5EE6B0; border-color: rgba(52,224,161,.35); }
+.alert-error   { background: rgba(255,90,95,.1);  color: #FF8A8E; border-color: rgba(255,90,95,.35); }
+.alert-info    { background: rgba(96,165,250,.1); color: #8DBCFF; border-color: rgba(96,165,250,.35); }
+
+/* --- Auth --- */
+.auth-page {
+    background:
+        radial-gradient(50% 60% at 50% 0%, rgba(52,224,161,.16), transparent 70%),
+        var(--bg);
+}
+.auth-card { border-radius: 20px; box-shadow: var(--shadow-lg); }
+.auth-header h2 { color: #fff; }
+.demo-cred { box-shadow: none; border-radius: 12px; background: var(--surface-2); }
+.demo-cred:hover { background: #1B2330; }
+
+/* --- Forms --- */
+.form-group label { color: var(--dark-light); font-weight: 600; }
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: #0A0E14;
+    color: var(--dark);
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    transition: border-color .15s, box-shadow .15s;
+}
+.form-group input::placeholder, .form-group textarea::placeholder { color: #66758B; }
+.form-group select option { background: var(--surface-2); color: var(--dark); }
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(52,224,161,.18);
+    outline: none;
+}
+
+/* --- Profile --- */
+.page-header h1 { color: #fff; letter-spacing: -.02em; }
+.card h3, .profile-card h2 { color: #fff; }
+.profile-avatar { background: linear-gradient(135deg, #34E0A1, #1E9CD7); color: #04120D; }
+.reputation-badge { background: rgba(52,224,161,.12); color: var(--primary); }
+.profile-stats { border-top-color: var(--line); }
+.profile-stat .stat-number { color: #fff; }
+.detail-table td { border-bottom-color: var(--line); }
+.notif-item, .report-item { border-bottom-color: var(--line); }
+.notif-item.unread { background: rgba(52,224,161,.07); border-radius: 10px; }
+
+/* --- Dashboard: floating dark panels around the map --- */
+.stats-bar { margin: 16px 16px 0; border-radius: 16px; }
+.stat-val { color: #fff; font-weight: 700; }
+.stat-item.critical .stat-val { color: #FF6B70; }
+.stat-lbl { text-transform: none; letter-spacing: 0; font-size: .8rem; color: var(--gray); }
+
+.dashboard-body { padding: 16px; gap: 16px; }
+.filter-panel { border-radius: 16px; }
+.filter-panel h3 { color: #fff; }
+
+.filter-btn { background: transparent; color: var(--dark-light); border: 1px solid var(--line-strong); border-radius: 999px; font-weight: 500; }
+.filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+.filter-btn.active { background: var(--primary); border-color: var(--primary); color: #04120D; }
+
+.map-container { border-radius: 16px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow-md); }
+
+.feed-item,
+.feed-item:is(.severity-low, .severity-medium, .severity-high, .severity-critical) {
+    background: var(--surface-2);
+    color: var(--dark);
+    border: 1px solid var(--line);
+    border-left-width: 3px;
+    border-radius: 12px;
+}
+.feed-item { border-left-color: var(--primary); }
+.feed-item.severity-critical { border-left-color: var(--danger); }
+.feed-item.severity-high     { border-left-color: #FF8A3D; }
+.feed-item.severity-medium   { border-left-color: #FFD166; }
+.feed-item.severity-low      { border-left-color: var(--primary); }
+.feed-item:hover,
+.feed-item:is(.severity-low, .severity-medium, .severity-high, .severity-critical):hover { background: #1B2330; }
+.feed-item-title { color: #fff; }
+
+.verify-btn { border-radius: 8px; }
+.verify-btn.confirm { background: rgba(52,224,161,.14); color: #5EE6B0; }
+.verify-btn.dispute { background: rgba(255,90,95,.14); color: #FF8A8E; }
+
+/* --- Map: dark tiles by CSS filter (works with any tile layer) --- */
+.leaflet-container { background: #0B0F15; font-family: var(--font-body); }
+.leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.92) contrast(.9) saturate(.7); }
+
+.map-legend { border-radius: 12px; }
+.map-legend h4 { color: #fff; }
+
+.leaflet-popup-content-wrapper {
+    background: var(--surface) !important;
+    color: var(--dark);
+    border: 1px solid var(--line-strong);
+    border-radius: 14px !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+.leaflet-popup-tip { background: var(--surface) !important; border: 1px solid var(--line-strong); }
+.leaflet-container a.leaflet-popup-close-button { color: var(--gray); }
+.popup-content h4 { color: #fff; }
+.popup-type { background: rgba(255,255,255,.08); color: var(--dark-light); }
+
+.leaflet-bar { border: 1px solid var(--line-strong) !important; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow-md) !important; }
+.leaflet-bar a { background: var(--surface); color: var(--dark); border-bottom: 1px solid var(--line); }
+.leaflet-bar a:hover { background: var(--surface-2); color: #fff; }
+
+.leaflet-control-attribution { background: rgba(7,9,13,.72) !important; color: var(--gray-light) !important; }
+.leaflet-control-attribution a { color: var(--gray) !important; }
+
+.marker-icon { border-color: #0B0F15; border-width: 2px; }
+
+/* --- Routes --- */
+.route-info-box { border-radius: 14px; border-left: 3px solid #60A5FA; }
+.route-info-box:hover { border-color: var(--line-strong); box-shadow: var(--shadow-md); }
+.route-info-box.high-risk { border-left-color: var(--danger); }
+.route-info-box.recommended { background: rgba(52,224,161,.08); border-color: rgba(52,224,161,.4); border-left: 3px solid var(--primary); }
+.route-info-box h4 { color: #fff; }
+
+.risk-label { border-radius: 999px; padding: .2rem .75rem; }
+.risk-safe     { background: rgba(52,224,161,.16);  color: #5EE6B0; }
+.risk-low      { background: rgba(255,209,102,.16); color: #FFD166; }
+.risk-moderate { background: rgba(255,138,61,.17);  color: #FFA45C; }
+.risk-high     { background: rgba(255,90,95,.17);   color: #FF8A8E; }
+.risk-critical { background: var(--danger); color: #fff; }
+
+.shelter-popup h4 { color: var(--primary); }
+.shelter-popup .capacity-bar { background: rgba(255,255,255,.12); }
+.shelter-popup .capacity-fill { background: var(--primary); }
+
+/* --- Mobile --- */
+@media (max-width: 768px) {
+    .nav-links { background: rgba(7,9,13,.97); border-bottom: 1px solid var(--line); }
+    .hero { padding: 3.5rem 1rem 2.5rem; }
+    .stats-bar { margin: 8px 8px 0; }
+    .dashboard-body { padding: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+
+/* ============================================
+   HOME HERO ANIMATION: a road, cars, and a hazard to steer around.
+   Pure CSS - no HTML or JavaScript changes.
+   The same scene animates a mint car, a white car that swerves around
+   the red incident marker, and an amber car, with moving lane dashes.
+   ============================================ */
+
+.hero {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: calc(clamp(120px, 15vw, 220px) + 3rem);
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 70%;
+    background: linear-gradient(to top, rgba(52,224,161,.10), transparent);
+    pointer-events: none;
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: clamp(120px, 15vw, 220px);
+    background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIwIDIwMCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNYXggc2xpY2UiPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJlYW0iIHgxPSIwIiB4Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkZGM0IwIiBzdG9wLW9wYWNpdHk9Ii4zMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0ZGRjNCMCIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxzdHlsZT4KLmRhc2h7YW5pbWF0aW9uOmRhc2ggLjlzIGxpbmVhciBpbmZpbml0ZX0KLmF7YW5pbWF0aW9uOmRhIDExcyBsaW5lYXIgaW5maW5pdGV9Ci5ie2FuaW1hdGlvbjpkYiAxNnMgbGluZWFyIGluZmluaXRlfQouY3thbmltYXRpb246ZGEgMTZzIGxpbmVhciBpbmZpbml0ZTthbmltYXRpb24tZGVsYXk6LThzfQpAa2V5ZnJhbWVzIGRhc2h7dG97c3Ryb2tlLWRhc2hvZmZzZXQ6NjR9fQpAa2V5ZnJhbWVzIGRhe2Zyb217dHJhbnNmb3JtOnRyYW5zbGF0ZVgoLTIwMHB4KX10b3t0cmFuc2Zvcm06dHJhbnNsYXRlWCgyMTIwcHgpfX0KQGtleWZyYW1lcyBkYnswJXt0cmFuc2Zvcm06dHJhbnNsYXRlKC0yMDBweCwwKSByb3RhdGUoMCl9MzguOCV7dHJhbnNmb3JtOnRyYW5zbGF0ZSg3MDBweCwwKSByb3RhdGUoMCl9NDIuMiV7dHJhbnNmb3JtOnRyYW5zbGF0ZSg3ODBweCwzMHB4KSByb3RhdGUoMTRkZWcpfTQ1Ljcle3RyYW5zZm9ybTp0cmFuc2xhdGUoODYwcHgsNjBweCkgcm90YXRlKDApfTU4LjYle3RyYW5zZm9ybTp0cmFuc2xhdGUoMTE2MHB4LDYwcHgpIHJvdGF0ZSgwKX02Mi4xJXt0cmFuc2Zvcm06dHJhbnNsYXRlKDEyNDBweCwzMHB4KSByb3RhdGUoLTE0ZGVnKX02NS41JXt0cmFuc2Zvcm06dHJhbnNsYXRlKDEzMjBweCwwKSByb3RhdGUoMCl9MTAwJXt0cmFuc2Zvcm06dHJhbnNsYXRlKDIxMjBweCwwKSByb3RhdGUoMCl9fQpAbWVkaWEgKHByZWZlcnMtcmVkdWNlZC1tb3Rpb246cmVkdWNlKXsqe2FuaW1hdGlvbjpub25lIWltcG9ydGFudH19Cjwvc3R5bGU+CjxyZWN0IHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzA3MDkwRCIvPgo8cmVjdCB5PSIxMCIgd2lkdGg9IjE5MjAiIGhlaWdodD0iMTgwIiBmaWxsPSIjMEQxMTE3Ii8+CjxwYXRoIGQ9Ik0wIDEwSDE5MjBNMCAxOTBIMTkyMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjIyIiBzdHJva2Utd2lkdGg9IjMiLz4KPHBhdGggY2xhc3M9ImRhc2giIGQ9Ik0wIDcwSDE5MjBNMCAxMzBIMTkyMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjM4IiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1kYXNoYXJyYXk9IjM0IDMwIi8+CjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEwMDAsMTAwKSI+PGNpcmNsZSByPSIxNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkY1QTVGIiBzdHJva2Utd2lkdGg9IjIiPjxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9InIiIHZhbHVlcz0iMTY7NDYiIGR1cj0iMS42cyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiLz48YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJvcGFjaXR5IiB2YWx1ZXM9Ii45OzAiIGR1cj0iMS42cyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiLz48L2NpcmNsZT48Y2lyY2xlIHI9IjE1IiBmaWxsPSIjRkY1QTVGIi8+PHBhdGggZD0iTTAtOEw5IDhILTlaIiBmaWxsPSIjRkZGIi8+PC9nPgo8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLDQwKSI+PGcgY2xhc3M9ImEiPjxyZWN0IHg9Ii0zMSIgeT0iLTE1IiB3aWR0aD0iNjIiIGhlaWdodD0iMzAiIHJ4PSI5IiBmaWxsPSIjMzRFMEExIi8+PHJlY3QgeD0iNiIgeT0iLTExIiB3aWR0aD0iMTIiIGhlaWdodD0iMjIiIHJ4PSI0IiBmaWxsPSIjMEIwRjE1IiBvcGFjaXR5PSIuNzgiLz48cmVjdCB4PSItMjYiIHk9Ii0xMSIgd2lkdGg9IjciIGhlaWdodD0iMjIiIHJ4PSIzIiBmaWxsPSIjMEIwRjE1IiBvcGFjaXR5PSIuNiIvPjxyZWN0IHg9IjI2IiB5PSItMTIiIHdpZHRoPSI1IiBoZWlnaHQ9IjYiIHJ4PSIyIiBmaWxsPSIjRkZGM0IwIi8+PHJlY3QgeD0iMjYiIHk9IjYiIHdpZHRoPSI1IiBoZWlnaHQ9IjYiIHJ4PSIyIiBmaWxsPSIjRkZGM0IwIi8+PHJlY3QgeD0iLTMyIiB5PSItMTIiIHdpZHRoPSIzIiBoZWlnaHQ9IjYiIGZpbGw9IiNGRjVBNUYiLz48cmVjdCB4PSItMzIiIHk9IjYiIHdpZHRoPSIzIiBoZWlnaHQ9IjYiIGZpbGw9IiNGRjVBNUYiLz48cG9seWdvbiBwb2ludHM9IjMxLC05IDE1MCwtMzYgMTUwLDM2IDMxLDkiIGZpbGw9InVybCgjYmVhbSkiLz48L2c+PC9nPgo8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLDEwMCkiPjxnIGNsYXNzPSJiIj48cmVjdCB4PSItMzEiIHk9Ii0xNSIgd2lkdGg9IjYyIiBoZWlnaHQ9IjMwIiByeD0iOSIgZmlsbD0iI0U4RURGNSIvPjxyZWN0IHg9IjYiIHk9Ii0xMSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjIyIiByeD0iNCIgZmlsbD0iIzBCMEYxNSIgb3BhY2l0eT0iLjc4Ii8+PHJlY3QgeD0iLTI2IiB5PSItMTEiIHdpZHRoPSI3IiBoZWlnaHQ9IjIyIiByeD0iMyIgZmlsbD0iIzBCMEYxNSIgb3BhY2l0eT0iLjYiLz48cmVjdCB4PSIyNiIgeT0iLTEyIiB3aWR0aD0iNSIgaGVpZ2h0PSI2IiByeD0iMiIgZmlsbD0iI0ZGRjNCMCIvPjxyZWN0IHg9IjI2IiB5PSI2IiB3aWR0aD0iNSIgaGVpZ2h0PSI2IiByeD0iMiIgZmlsbD0iI0ZGRjNCMCIvPjxyZWN0IHg9Ii0zMiIgeT0iLTEyIiB3aWR0aD0iMyIgaGVpZ2h0PSI2IiBmaWxsPSIjRkY1QTVGIi8+PHJlY3QgeD0iLTMyIiB5PSI2IiB3aWR0aD0iMyIgaGVpZ2h0PSI2IiBmaWxsPSIjRkY1QTVGIi8+PHBvbHlnb24gcG9pbnRzPSIzMSwtOSAxNTAsLTM2IDE1MCwzNiAzMSw5IiBmaWxsPSJ1cmwoI2JlYW0pIi8+PC9nPjwvZz4KPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwxNjApIj48ZyBjbGFzcz0iYyI+PHJlY3QgeD0iLTMxIiB5PSItMTUiIHdpZHRoPSI2MiIgaGVpZ2h0PSIzMCIgcng9IjkiIGZpbGw9IiNGRkIwMjAiLz48cmVjdCB4PSI2IiB5PSItMTEiIHdpZHRoPSIxMiIgaGVpZ2h0PSIyMiIgcng9IjQiIGZpbGw9IiMwQjBGMTUiIG9wYWNpdHk9Ii43OCIvPjxyZWN0IHg9Ii0yNiIgeT0iLTExIiB3aWR0aD0iNyIgaGVpZ2h0PSIyMiIgcng9IjMiIGZpbGw9IiMwQjBGMTUiIG9wYWNpdHk9Ii42Ii8+PHJlY3QgeD0iMjYiIHk9Ii0xMiIgd2lkdGg9IjUiIGhlaWdodD0iNiIgcng9IjIiIGZpbGw9IiNGRkYzQjAiLz48cmVjdCB4PSIyNiIgeT0iNiIgd2lkdGg9IjUiIGhlaWdodD0iNiIgcng9IjIiIGZpbGw9IiNGRkYzQjAiLz48cmVjdCB4PSItMzIiIHk9Ii0xMiIgd2lkdGg9IjMiIGhlaWdodD0iNiIgZmlsbD0iI0ZGNUE1RiIvPjxyZWN0IHg9Ii0zMiIgeT0iNiIgd2lkdGg9IjMiIGhlaWdodD0iNiIgZmlsbD0iI0ZGNUE1RiIvPjxwb2x5Z29uIHBvaW50cz0iMzEsLTkgMTUwLC0zNiAxNTAsMzYgMzEsOSIgZmlsbD0idXJsKCNiZWFtKSIvPjwvZz48L2c+Cjwvc3ZnPg==") center bottom / auto 100% repeat-x;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.hero-content { position: relative; z-index: 2; animation: rise .8s ease both; }
+
+@keyframes rise {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: none; }
+}
+.pw-rules { list-style: none; margin: .5rem 0 0; padding: 0; font-size: .8rem; color: var(--gray); }
+.pw-rules li { display: flex; align-items: center; gap: .5rem; padding: .1rem 0; }
+.pw-rules li::before { content: "○"; font-size: .9rem; }
+.pw-rules li.ok { color: var(--primary); }
+.pw-rules li.ok::before { content: "✓"; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }

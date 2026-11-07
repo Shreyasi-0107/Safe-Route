@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - SafeRoute</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/theme.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/"><span class="logo">🛡️</span><span class="brand-name">SafeRoute</span></a>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/">Home</a></li>
+                <li><a href="/dashboard.html">Live Map</a></li>
+                <li><a href="/profile.html" class="active">Profile</a></li>
+                <li id="adminNavItem" style="display:none"><a href="/admin.html">Admin</a></li>
+                <li id="loginNavItem" style="display:none"><a href="/login.html" class="btn-nav">Login</a></li>
+                <li id="logoutNavItem"><a href="#" onclick="logout()" class="btn-nav btn-logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1>👤 My Profile</h1>
+        </div>
+
+        <div id="alertMsg" class="alert" style="display:none"></div>
+
+        <div class="profile-grid">
+            <div class="profile-card">
+                <div class="profile-avatar" id="profileAvatar">?</div>
+                <h2 id="profileName">Loading...</h2>
+                <p id="profileEmail" class="text-muted"></p>
+                <div class="reputation-badge" id="reputationBadge">New Reporter</div>
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <span class="stat-number" id="repScore">0</span>
+                        <span class="stat-label">Reputation</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="stat-number" id="reportsCount">0</span>
+                        <span class="stat-label">Reports</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="stat-number" id="verifiedCount">0</span>
+                        <span class="stat-label">Verified</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-details">
+                <div class="card">
+                    <h3>📊 Account Details</h3>
+                    <table class="detail-table">
+                        <tr><td>Name</td><td id="detailName">--</td></tr>
+                        <tr><td>Email</td><td id="detailEmail">--</td></tr>
+                        <tr><td>Role</td><td id="detailRole">--</td></tr>
+                        <tr><td>Member since</td><td id="detailJoined">--</td></tr>
+                        <tr><td>Reputation</td><td id="detailRep">--</td></tr>
+                        <tr><td>Reports submitted</td><td id="detailReports">--</td></tr>
+                        <tr><td>Reports verified by others</td><td id="detailVerified">--</td></tr>
+                        <tr><td>Incorrect reports</td><td id="detailIncorrect">--</td></tr>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>📋 My Recent Reports</h3>
+                    <div id="myReports">
+                        <div class="loading-spinner">Loading your reports...</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🔔 Notifications</h3>
+                    <div id="notifications">
+                        <div class="loading-spinner">Loading notifications...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/profile.js"></script>
+</body>
+</html>

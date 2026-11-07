@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - SafeRoute</title>
+    <link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/dashboard.css">
+<link rel="stylesheet" href="/css/theme.css">
+    
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/"><span class="logo">🛡️</span><span class="brand-name">SafeRoute</span></a>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/">Home</a></li>
+                <li><a href="/dashboard.html">Live Map</a></li>
+                <li><a href="/shelters.html">Shelters</a></li>
+                <li><a href="/route.html">Safe Route</a></li>
+                <li><a href="/report.html">Report</a></li>
+                <li id="profileNavItem" style="display:none"><a href="/profile.html">Profile</a></li>
+                <li id="adminNavItem" style="display:none"><a href="/admin.html" class="active">Admin</a></li>
+                <li id="loginNavItem"><a href="/login.html" class="btn-nav">Login</a></li>
+                <li id="logoutNavItem" style="display:none"><a href="#" onclick="logout()" class="btn-nav btn-logout">Logout</a></li>
+            </ul>
+            <div class="hamburger" onclick="toggleNav()"><span></span><span></span><span></span></div>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1>🛡️ Admin Dashboard</h1>
+        </div>
+
+        <!-- Stats Overview -->
+        <div id="statsGrid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-bottom:1.5rem;">
+            <div class="card" style="text-align:center"><div class="stat-number" style="font-size:2rem;font-weight:800" id="sTotalInc">--</div><div class="text-muted">Total Incidents</div></div>
+            <div class="card" style="text-align:center"><div class="stat-number" style="font-size:2rem;font-weight:800;color:var(--danger)" id="sActiveInc">--</div><div class="text-muted">Active Incidents</div></div>
+            <div class="card" style="text-align:center"><div class="stat-number" style="font-size:2rem;font-weight:800;color:var(--success)" id="sResolved">--</div><div class="text-muted">Resolved</div></div>
+            <div class="card" style="text-align:center"><div class="stat-number" style="font-size:2rem;font-weight:800" id="sTotalUsers">--</div><div class="text-muted">Total Users</div></div>
+            <div class="card" style="text-align:center"><div class="stat-number" style="font-size:2rem;font-weight:800;color:var(--primary)" id="sShelters">--</div><div class="text-muted">Shelters</div></div>
+            <div class="card" style="text-align:center"><div class="stat-number" style="font-size:2rem;font-weight:800;color:var(--warning)" id="sHighSev">--</div><div class="text-muted">High Severity</div></div>
+        </div>
+
+        <!-- Tabs -->
+        <div style="display:flex; gap:.5rem; margin-bottom:1rem; flex-wrap:wrap;">
+            <button class="btn btn-primary btn-sm" onclick="showTab('stats')" id="tabStats">📊 Statistics</button>
+            <button class="btn btn-outline btn-sm" onclick="showTab('incidents')" id="tabIncidents">🚨 Incidents</button>
+            <button class="btn btn-outline btn-sm" onclick="showTab('users')" id="tabUsers">👥 Users</button>
+        </div>
+
+        <!-- Stats Tab -->
+        <div id="statsTab">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                <div class="card">
+                    <h3>📊 Incidents by Type</h3>
+                    <div id="byType"><div class="loading-spinner">Loading...</div></div>
+                </div>
+                <div class="card">
+                    <h3>📈 Incidents by Severity</h3>
+                    <div id="bySeverity"><div class="loading-spinner">Loading...</div></div>
+                </div>
+                <div class="card">
+                    <h3>📅 Last 7 Days</h3>
+                    <div id="perDay"><div class="loading-spinner">Loading...</div></div>
+                </div>
+                <div class="card">
+                    <h3>🏆 Top Reporters</h3>
+                    <div id="topReporters"><div class="loading-spinner">Loading...</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Incidents Tab -->
+        <div id="incidentsTab" style="display:none">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:.5rem;">
+                    <h3 style="margin:0">All Incidents</h3>
+                    <div style="display:flex; gap:.5rem;">
+                        <select id="filterStatus" onchange="loadAdminIncidents()" style="padding:.35rem .5rem; border:1px solid var(--border); border-radius:6px; font-size:.82rem">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="resolved">Resolved</option>
+                            <option value="expired">Expired</option>
+                            <option value="false_report">False Report</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="overflow-x:auto">
+                    <table style="width:100%; border-collapse:collapse; font-size:.85rem" id="incidentsTable">
+                        <thead>
+                            <tr style="background:var(--light); text-align:left">
+                                <th style="padding:.6rem .5rem">Title</th>
+                                <th style="padding:.6rem .5rem">Type</th>
+                                <th style="padding:.6rem .5rem">Severity</th>
+                                <th style="padding:.6rem .5rem">Status</th>
+                                <th style="padding:.6rem .5rem">Reporter</th>
+                                <th style="padding:.6rem .5rem">Verified</th>
+                                <th style="padding:.6rem .5rem">Date</th>
+                                <th style="padding:.6rem .5rem">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incidentsBody">
+                            <tr><td colspan="8" class="loading-spinner">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="incidentPagination" style="display:flex; justify-content:center; gap:.5rem; margin-top:1rem"></div>
+            </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="usersTab" style="display:none">
+            <div class="card">
+                <h3>All Users</h3>
+                <div style="overflow-x:auto">
+                    <table style="width:100%; border-collapse:collapse; font-size:.85rem">
+                        <thead>
+                            <tr style="background:var(--light); text-align:left">
+                                <th style="padding:.6rem .5rem">Name</th>
+                                <th style="padding:.6rem .5rem">Email</th>
+                                <th style="padding:.6rem .5rem">Role</th>
+                                <th style="padding:.6rem .5rem">Reputation</th>
+                                <th style="padding:.6rem .5rem">Reports</th>
+                                <th style="padding:.6rem .5rem">Joined</th>
+                                <th style="padding:.6rem .5rem">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersBody">
+                            <tr><td colspan="7" class="loading-spinner">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        // Require admin
+        const user = getCurrentUser();
+        if (!user || user.role !== 'admin') {
+            showToast('Admin access required', 'error');
+            setTimeout(() => window.location.href = '/', 1000);
+        }
+
+        let currentPage = 1;
+
+        // Load stats on init
+        loadStatistics();
+
+        async function loadStatistics() {
+            try {
+                const data = await apiFetch('/admin/statistics');
+                if (!data?.success) return;
+
+                const s = data.statistics;
+                const o = s.overview;
+
+                // Overview cards
+                setText('sTotalInc', o.totalIncidents);
+                setText('sActiveInc', o.activeIncidents);
+                setText('sResolved', o.resolvedIncidents);
+                setText('sTotalUsers', o.totalUsers);
+                setText('sShelters', `${o.openShelters}/${o.totalShelters}`);
+                setText('sHighSev', o.highSeverityCount);
+
+                // By Type
+                document.getElementById('byType').innerHTML = s.incidentsByType.length ?
+                    s.incidentsByType.map(t => `
+                        <div style="display:flex; justify-content:space-between; padding:.4rem 0; border-bottom:1px solid var(--border); font-size:.85rem">
+                            <span>${getTypeIcon(t._id)} ${getTypeLabel(t._id)}</span>
+                            <strong>${t.count}</strong>
+                        </div>
+                    `).join('') : '<p class="no-data">No data</p>';
+
+                // By Severity
+                document.getElementById('bySeverity').innerHTML = s.incidentsBySeverity.length ?
+                    s.incidentsBySeverity.map(t => `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:.4rem 0; border-bottom:1px solid var(--border); font-size:.85rem">
+                            <span class="severity-badge severity-${t._id}">${t._id}</span>
+                            <strong>${t.count}</strong>
+                        </div>
+                    `).join('') : '<p class="no-data">No data</p>';
+
+                // Per Day
+                document.getElementById('perDay').innerHTML = s.incidentsPerDay.length ?
+                    s.incidentsPerDay.map(d => `
+                        <div style="display:flex; justify-content:space-between; padding:.4rem 0; border-bottom:1px solid var(--border); font-size:.85rem">
+                            <span>📅 ${d._id.date}</span>
+                            <strong>${d.count} incidents</strong>
+                        </div>
+                    `).join('') : '<p class="no-data">No incidents in the last 7 days</p>';
+
+                // Top Reporters
+                document.getElementById('topReporters').innerHTML = s.topReporters.length ?
+                    s.topReporters.map((r, i) => `
+                        <div style="display:flex; justify-content:space-between; padding:.4rem 0; border-bottom:1px solid var(--border); font-size:.85rem">
+                            <span>${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '👤'} ${escapeHtml(r.name)}</span>
+                            <span>${r.reportsCount} reports · ⭐ ${r.reputation}</span>
+                        </div>
+                    `).join('') : '<p class="no-data">No reporters yet</p>';
+
+            } catch (err) {
+                console.error('Stats error:', err);
+            }
+        }
+
+        // Tab switching
+        function showTab(tab) {
+            document.getElementById('statsTab').style.display = tab === 'stats' ? '' : 'none';
+            document.getElementById('incidentsTab').style.display = tab === 'incidents' ? '' : 'none';
+            document.getElementById('usersTab').style.display = tab === 'users' ? '' : 'none';
+
+            document.getElementById('tabStats').className = `btn btn-sm ${tab === 'stats' ? 'btn-primary' : 'btn-outline'}`;
+            document.getElementById('tabIncidents').className = `btn btn-sm ${tab === 'incidents' ? 'btn-primary' : 'btn-outline'}`;
+            document.getElementById('tabUsers').className = `btn btn-sm ${tab === 'users' ? 'btn-primary' : 'btn-outline'}`;
+
+            if (tab === 'incidents') loadAdminIncidents();
+            if (tab === 'users') loadUsers();
+        }
+
+        // Load incidents
+        async function loadAdminIncidents(page = 1) {
+            currentPage = page;
+            const status = document.getElementById('filterStatus').value;
+            const url = `/admin/incidents?page=${page}&limit=15${status ? '&status=' + status : ''}`;
+
+            try {
+                const data = await apiFetch(url);
+                if (!data?.success) return;
+
+                const tbody = document.getElementById('incidentsBody');
+                tbody.innerHTML = data.incidents.map(inc => `
+                    <tr style="border-bottom:1px solid var(--border)">
+                        <td style="padding:.5rem">${escapeHtml(inc.title)}</td>
+                        <td style="padding:.5rem">${getTypeIcon(inc.type)} ${getTypeLabel(inc.type)}</td>
+                        <td style="padding:.5rem"><span class="severity-badge severity-${inc.severity}">${inc.severity}</span></td>
+                        <td style="padding:.5rem">
+                            <select onchange="updateStatus('${inc._id}', this.value)" style="padding:.25rem; border:1px solid var(--border); border-radius:4px; font-size:.8rem">
+                                <option value="active" ${inc.status === 'active' ? 'selected' : ''}>Active</option>
+                                <option value="resolved" ${inc.status === 'resolved' ? 'selected' : ''}>Resolved</option>
+                                <option value="expired" ${inc.status === 'expired' ? 'selected' : ''}>Expired</option>
+                                <option value="false_report" ${inc.status === 'false_report' ? 'selected' : ''}>False Report</option>
+                            </select>
+                        </td>
+                        <td style="padding:.5rem">${inc.reportedBy?.name || 'Unknown'}</td>
+                        <td style="padding:.5rem">✅ ${inc.verificationCount || 0}</td>
+                        <td style="padding:.5rem">${timeAgo(inc.createdAt)}</td>
+                        <td style="padding:.5rem">
+                            <button class="btn btn-danger btn-sm" onclick="deleteIncident('${inc._id}')" style="padding:.2rem .5rem; font-size:.75rem">🗑️</button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                // Pagination
+                const pagDiv = document.getElementById('incidentPagination');
+                let pagHtml = '';
+                for (let p = 1; p <= data.pages; p++) {
+                    pagHtml += `<button class="btn btn-sm ${p === data.page ? 'btn-primary' : 'btn-outline'}" onclick="loadAdminIncidents(${p})">${p}</button>`;
+                }
+                pagDiv.innerHTML = pagHtml;
+
+            } catch (err) {
+                console.error('Load incidents error:', err);
+            }
+        }
+
+        // Update incident status
+        async function updateStatus(id, status) {
+            try {
+                const data = await apiFetch(`/admin/incidents/${id}/status`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ status })
+                });
+                if (data?.success) {
+                    showToast('Status updated', 'success');
+                    loadStatistics();
+                } else {
+                    showToast(data?.message || 'Update failed', 'error');
+                }
+            } catch (err) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        // Delete incident
+        async function deleteIncident(id) {
+            if (!confirm('Are you sure you want to delete this incident?')) return;
+            try {
+                const data = await apiFetch(`/admin/incidents/${id}`, { method: 'DELETE' });
+                if (data?.success) {
+                    showToast('Incident deleted', 'success');
+                    loadAdminIncidents(currentPage);
+                    loadStatistics();
+                } else {
+                    showToast(data?.message || 'Delete failed', 'error');
+                }
+            } catch (err) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        // Load users
+        async function loadUsers() {
+            try {
+                const data = await apiFetch('/admin/users');
+                if (!data?.success) return;
+
+                document.getElementById('usersBody').innerHTML = data.users.map(u => `
+                    <tr style="border-bottom:1px solid var(--border)">
+                        <td style="padding:.5rem">${escapeHtml(u.name)}</td>
+                        <td style="padding:.5rem">${escapeHtml(u.email)}</td>
+                        <td style="padding:.5rem">
+                            <select onchange="updateRole('${u._id}', this.value)" style="padding:.25rem; border:1px solid var(--border); border-radius:4px; font-size:.8rem">
+                                <option value="user" ${u.role === 'user' ? 'selected' : ''}>User</option>
+                                <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+                            </select>
+                        </td>
+                        <td style="padding:.5rem">⭐ ${u.reputation || 0}</td>
+                        <td style="padding:.5rem">${u.reportsCount || 0}</td>
+                        <td style="padding:.5rem">${formatDate(u.createdAt)}</td>
+                        <td style="padding:.5rem">
+                            <span class="severity-badge ${u.isActive ? 'severity-low' : 'severity-high'}">${u.isActive ? 'Active' : 'Inactive'}</span>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Load users error:', err);
+            }
+        }
+
+        // Update user role
+        async function updateRole(id, role) {
+            try {
+                const data = await apiFetch(`/admin/users/${id}/role`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ role })
+                });
+                if (data?.success) {
+                    showToast(`Role updated to ${role}`, 'success');
+                } else {
+                    showToast(data?.message || 'Update failed', 'error');
+                }
+            } catch (err) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        function setText(id, val) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SafeRoute</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/theme.css">
+</head>
+<body class="auth-page">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/"><span class="logo">🛡️</span><span class="brand-name">SafeRoute</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>🔐 Login to SafeRoute</h2>
+                <p>Access your account to report and track incidents</p>
+            </div>
+
+            <div id="alertMsg" class="alert" style="display:none" role="alert" aria-live="polite"></div>
+
+            <form id="loginForm" class="auth-form" novalidate>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="your@email.com"
+                           autocomplete="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password"
+                           autocomplete="current-password" required>
+                </div>
+
+                <label class="show-pw">
+                    <input type="checkbox" id="showPw"> Show password
+                </label>
+
+                <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
+                    Login
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="/register.html">Register here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script>
+        // Already logged in? Go to the app.
+        if (localStorage.getItem('token')) {
+            window.location.href = '/dashboard.html';
+        }
+
+        const form = document.getElementById('loginForm');
+        const emailEl = document.getElementById('email');
+        const pwEl = document.getElementById('password');
+        const showPwEl = document.getElementById('showPw');
+        const btn = document.getElementById('loginBtn');
+
+        showPwEl.addEventListener('change', () => {
+            pwEl.type = showPwEl.checked ? 'text' : 'password';
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = emailEl.value.trim();
+            const password = pwEl.value;
+
+            if (!email || !password) {
+                showAlert('Please enter your email and password.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Logging in...';
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    showAlert('Login successful! Redirecting...', 'success');
+                    setTimeout(() => window.location.href = '/dashboard.html', 800);
+                } else {
+                    // e.g. "Invalid email or password"
+                    showAlert(data.message || 'Login failed. Please try again.', 'error');
+                    pwEl.focus();
+                    pwEl.select();
+                    btn.disabled = false;
+                    btn.textContent = 'Login';
+                }
+            } catch (err) {
+                showAlert('Could not reach the server. Please try again.', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Login';
+            }
+        });
+
+        function showAlert(message, type) {
+            const box = document.getElementById('alertMsg');
+            box.textContent = message;
+            box.className = `alert alert-${type}`;
+            box.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

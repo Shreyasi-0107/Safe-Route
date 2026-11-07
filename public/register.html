@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - SafeRoute</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/theme.css">
+</head>
+<body class="auth-page">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/"><span class="logo">🛡️</span><span class="brand-name">SafeRoute</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>📝 Create Account</h2>
+                <p>Join SafeRoute to report incidents and help your community</p>
+            </div>
+
+            <div id="alertMsg" class="alert" style="display:none" role="alert" aria-live="polite"></div>
+
+            <form id="registerForm" class="auth-form" novalidate>
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Your full name"
+                           autocomplete="name" required minlength="2" maxlength="60">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="your@email.com"
+                           autocomplete="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a strong password"
+                           autocomplete="new-password" required minlength="8" maxlength="64"
+                           aria-describedby="pwRules">
+                    <ul class="pw-rules" id="pwRules" aria-live="polite"></ul>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat your password"
+                           autocomplete="new-password" required>
+                </div>
+
+                <label class="show-pw">
+                    <input type="checkbox" id="showPw"> Show passwords
+                </label>
+
+                <button type="submit" class="btn btn-primary btn-full" id="registerBtn" disabled>
+                    Create Account
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="/login.html">Login here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script>
+        // Already logged in? Go to the app. (To test registering again, log out
+        // first or use a private window.)
+        if (localStorage.getItem('token')) {
+            window.location.href = '/dashboard.html';
+        }
+
+        const form = document.getElementById('registerForm');
+        const nameEl = document.getElementById('name');
+        const emailEl = document.getElementById('email');
+        const pwEl = document.getElementById('password');
+        const confirmEl = document.getElementById('confirmPassword');
+        const showPwEl = document.getElementById('showPw');
+        const btn = document.getElementById('registerBtn');
+        const rulesEl = document.getElementById('pwRules');
+
+        // The same rules the server enforces (authController.js)
+        const rules = [
+            { text: 'At least 8 characters',      test: (v) => v.length >= 8 && v.length <= 64 },
+            { text: 'One uppercase letter (A-Z)', test: (v) => /[A-Z]/.test(v) },
+            { text: 'One lowercase letter (a-z)', test: (v) => /[a-z]/.test(v) },
+            { text: 'One number (0-9)',           test: (v) => /[0-9]/.test(v) },
+            { text: 'Both passwords match',       test: (v) => v.length > 0 && v === confirmEl.value }
+        ];
+
+        rules.forEach((rule) => {
+            rule.el = document.createElement('li');
+            rule.el.textContent = rule.text;
+            rulesEl.appendChild(rule.el);
+        });
+
+        function passwordsOk() {
+            return rules.every((rule) => rule.test(pwEl.value));
+        }
+
+        function updateState() {
+            rules.forEach((rule) => rule.el.classList.toggle('ok', rule.test(pwEl.value)));
+            const nameOk = nameEl.value.trim().length >= 2;
+            const emailOk = emailEl.value.trim() !== '' && emailEl.checkValidity();
+            btn.disabled = !(nameOk && emailOk && passwordsOk());
+        }
+
+        [nameEl, emailEl, pwEl, confirmEl].forEach((el) => el.addEventListener('input', updateState));
+
+        showPwEl.addEventListener('change', () => {
+            const type = showPwEl.checked ? 'text' : 'password';
+            pwEl.type = type;
+            confirmEl.type = type;
+        });
+
+        updateState();
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = nameEl.value.trim();
+            const email = emailEl.value.trim();
+            const password = pwEl.value;
+
+            // Safety net in case the button was re-enabled by hand
+            if (!passwordsOk()) {
+                showAlert('Please meet all the password requirements.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Creating account...';
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    showAlert('Account created! Redirecting to dashboard...', 'success');
+                    setTimeout(() => window.location.href = '/dashboard.html', 1500);
+                } else {
+                    // e.g. "An account with this email already exists. Please log in instead."
+                    showAlert(data.message || 'Registration failed', 'error');
+                    btn.textContent = 'Create Account';
+                    updateState();
+                }
+            } catch (err) {
+                showAlert('Network error. Please try again.', 'error');
+                btn.textContent = 'Create Account';
+                updateState();
+            }
+        });
+
+        function showAlert(message, type) {
+            const box = document.getElementById('alertMsg');
+            box.textContent = message;
+            box.className = `alert alert-${type}`;
+            box.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

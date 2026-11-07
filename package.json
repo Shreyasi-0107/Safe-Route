@@ -1,0 +1,26 @@
+{
+  "name": "saferoute",
+  "version": "1.0.0",
+  "description": "SafeRoute - Crowd-Sourced Emergency Monitoring and Intelligent Safe Route Recommendation System",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon --watch server server/server.js",
+    "seed": "node server/seed.js"
+  },
+  "engines": { "node": ">=18" },
+  "keywords": ["emergency", "saferoute", "mongodb", "leaflet", "osrm"],
+  "author": "SafeRoute Project",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

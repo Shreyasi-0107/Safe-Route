@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Route Finder - SafeRoute</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/map.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/"><span class="logo">🛡️</span><span class="brand-name">SafeRoute</span></a>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/">Home</a></li>
+                <li><a href="/dashboard.html">Live Map</a></li>
+                <li><a href="/shelters.html">Shelters</a></li>
+                <li><a href="/route.html" class="active">Safe Route</a></li>
+                <li><a href="/report.html">Report</a></li>
+                <li id="profileNavItem" style="display:none"><a href="/profile.html">Profile</a></li>
+                <li id="adminNavItem" style="display:none"><a href="/admin.html">Admin</a></li>
+                <li id="loginNavItem"><a href="/login.html" class="btn-nav">Login</a></li>
+                <li id="logoutNavItem" style="display:none"><a href="#" onclick="logout()" class="btn-nav btn-logout">Logout</a></li>
+            </ul>
+            <div class="hamburger" onclick="toggleNav()"><span></span><span></span><span></span></div>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1>🛣️ Safe Route Finder</h1>
+            <p class="text-muted">Find the safest route between two locations based on community-reported incidents</p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:350px 1fr; gap:1.5rem; align-items:start;">
+            <!-- Controls Panel -->
+            <div>
+                <div class="card">
+                    <h3>📍 Enter Locations</h3>
+                    <div class="form-group">
+                        <label>Start Location</label>
+                        <input type="text" id="startAddress" placeholder="Click map or enter coordinates">
+                        <div class="form-row" style="margin-top:.35rem">
+                            <input type="number" id="startLat" step="any" placeholder="Lat" style="font-size:.82rem">
+                            <input type="number" id="startLng" step="any" placeholder="Lng" style="font-size:.82rem">
+                        </div>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="detectStart()" style="margin-top:.35rem">📍 Use My Location</button>
+                    </div>
+
+                    <div class="form-group" style="margin-top:.75rem">
+                        <label>End Location</label>
+                        <input type="text" id="endAddress" placeholder="Click map or enter coordinates">
+                        <div class="form-row" style="margin-top:.35rem">
+                            <input type="number" id="endLat" step="any" placeholder="Lat" style="font-size:.82rem">
+                            <input type="number" id="endLng" step="any" placeholder="Lng" style="font-size:.82rem">
+                        </div>
+                    </div>
+
+                    <p class="text-muted" style="font-size:.78rem; margin:.5rem 0">💡 Click on the map to set start (1st click) and end (2nd click) points</p>
+
+                    <button class="btn btn-primary btn-full" onclick="calculateRoute()" id="calcBtn">
+                        🛣️ Find Safe Route
+                    </button>
+                </div>
+
+                <!-- Route Results -->
+                <div id="routeResults" style="margin-top:1rem"></div>
+
+                <div class="card" style="margin-top:1rem">
+                    <p style="font-size:.78rem; color:var(--gray)">⚠️ Route safety is based on crowd-sourced reports and may not reflect current conditions. Always follow official emergency instructions.</p>
+                </div>
+            </div>
+
+            <!-- Map -->
+            <div class="card" style="padding:.5rem">
+                <div id="map" style="height:calc(100vh - 180px); min-height:500px; border-radius:8px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        // Init map
+        const routeMap = L.map('map').setView([31.22, 75.77], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
+        }).addTo(routeMap);
+
+        let startMarker = null, endMarker = null;
+        let routeLines = [];
+        let clickCount = 0;
+
+        // Click map to set start/end
+        routeMap.on('click', function(e) {
+            clickCount++;
+            if (clickCount % 2 === 1) {
+                setStart(e.latlng.lat, e.latlng.lng);
+            } else {
+                setEnd(e.latlng.lat, e.latlng.lng);
+            }
+        });
+
+        function setStart(lat, lng) {
+            if (startMarker) routeMap.removeLayer(startMarker);
+            startMarker = L.marker([lat, lng], { title: 'Start' }).addTo(routeMap).bindPopup('🟢 Start').openPopup();
+            document.getElementById('startLat').value = lat.toFixed(6);
+            document.getElementById('startLng').value = lng.toFixed(6);
+        }
+
+        function setEnd(lat, lng) {
+            if (endMarker) routeMap.removeLayer(endMarker);
+            endMarker = L.marker([lat, lng], { title: 'End' }).addTo(routeMap).bindPopup('🔴 End').openPopup();
+            document.getElementById('endLat').value = lat.toFixed(6);
+            document.getElementById('endLng').value = lng.toFixed(6);
+        }
+
+        function detectStart() {
+            if (!navigator.geolocation) { showToast('Geolocation not supported', 'error'); return; }
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    setStart(pos.coords.latitude, pos.coords.longitude);
+                    routeMap.setView([pos.coords.latitude, pos.coords.longitude], 14);
+                    showToast('Location detected!', 'success');
+                },
+                () => showToast('Could not detect location', 'error')
+            );
+        }
+
+        // Calculate route
+        async function calculateRoute() {
+            const startLat = parseFloat(document.getElementById('startLat').value);
+            const startLng = parseFloat(document.getElementById('startLng').value);
+            const endLat = parseFloat(document.getElementById('endLat').value);
+            const endLng = parseFloat(document.getElementById('endLng').value);
+
+            if (isNaN(startLat) || isNaN(startLng) || isNaN(endLat) || isNaN(endLng)) {
+                showToast('Please set both start and end locations', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('calcBtn');
+            btn.disabled = true;
+            btn.textContent = 'Calculating...';
+
+            // Clear old routes
+            routeLines.forEach(l => routeMap.removeLayer(l));
+            routeLines = [];
+
+            try {
+                const data = await apiFetch('/routes/calculate', {
+                    method: 'POST',
+                    body: JSON.stringify({ startLng, startLat, endLng, endLat })
+                });
+
+                if (!data || !data.success) {
+                    showToast(data?.message || 'Route calculation failed', 'error');
+                    btn.disabled = false;
+                    btn.textContent = '🛣️ Find Safe Route';
+                    return;
+                }
+
+                // Draw routes on map
+                const colors = ['#16a34a', '#2563eb', '#f59e0b', '#dc2626'];
+                const resultsDiv = document.getElementById('routeResults');
+                let html = '';
+
+                data.routes.forEach((route, i) => {
+                    const color = colors[i % colors.length];
+                    const coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
+                    const line = L.polyline(coords, {
+                        color: route.isRecommended ? '#16a34a' : color,
+                        weight: route.isRecommended ? 6 : 4,
+                        opacity: route.isRecommended ? 0.9 : 0.6
+                    }).addTo(routeMap);
+                    routeLines.push(line);
+
+                    const riskClass = route.riskLabel?.includes('SAFE') ? 'risk-safe' :
+                                     route.riskLabel?.includes('LOW') ? 'risk-low' :
+                                     route.riskLabel?.includes('MODERATE') ? 'risk-moderate' :
+                                     route.riskLabel?.includes('HIGH') ? 'risk-high' : 'risk-critical';
+
+                    html += `
+                        <div class="route-info-box ${route.isRecommended ? 'recommended' : ''}" onclick="focusRoute(${i})">
+                            <h4>${route.isRecommended ? '⭐ Recommended' : `Route ${i + 1}`}</h4>
+                            <div class="route-details">
+                                <span>📏 ${route.distanceKm} km</span>
+                                <span>⏱️ ${route.durationMin} min</span>
+                                <span class="risk-label ${riskClass}">${route.riskLabel || 'UNKNOWN'}</span>
+                            </div>
+                            <p style="font-size:.78rem; color:var(--gray); margin-top:.35rem">
+                                Risk Score: ${route.riskScore} · ${route.nearbyIncidents || 0} nearby incidents
+                            </p>
+                        </div>
+                    `;
+                });
+
+                resultsDiv.innerHTML = html;
+
+                // Fit map to show all routes
+                if (routeLines.length > 0) {
+                    const group = L.featureGroup(routeLines);
+                    routeMap.fitBounds(group.getBounds().pad(0.1));
+                }
+
+            } catch (err) {
+                showToast('Network error. Please try again.', 'error');
+            }
+
+            btn.disabled = false;
+            btn.textContent = '🛣️ Find Safe Route';
+        }
+
+        function focusRoute(index) {
+            if (routeLines[index]) {
+                routeMap.fitBounds(routeLines[index].getBounds().pad(0.1));
+            }
+        }
+    </script>
+</body>
+</html>
